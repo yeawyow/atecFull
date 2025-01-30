@@ -1,0 +1,27 @@
+[
+  {
+    "path": "/login",
+    "element": "SignIn",
+    "layout": "BlankLayout",
+    "protected": false
+  },
+  {
+    "path": "/",
+    "element": "Dashboard",
+    "layout": "DefaultLayout",
+    "title": "Dashboard",
+    "protected": true
+  },
+  {
+    "path": "/profile",
+    "element": "Profile",
+    "layout": "DefaultLayout",
+    "title": "Profile",
+    "protected": true
+  },
+  {
+    "path": "*",
+    "element": "PageAceess",
+    "protected": false
+  }
+]
