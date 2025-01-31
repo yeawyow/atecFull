@@ -17,6 +17,4 @@ app.use(cors());
 app.use('/api', teacherRoutes);
 app.use('/auth', userRoutes);
 
-console.log("test");
-
 module.exports = app;
