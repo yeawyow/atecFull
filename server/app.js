@@ -7,8 +7,6 @@ const userRoutes = require('./src/routes/userRoutes');
 const cron = require('node-cron');
 const cleanupExpiredTokens = require('./src/utils/cleanupExpiredTokens '); // นำเข้าไฟล์ฟังก์ชัน
 const trackTokensMiddleware = require('./src/utils/trackTokensMiddleware');
-const { JWT_SECRET } = require('./src/config/jwt');
-process.env.JWT_SECRET = JWT_SECRET;
 
 dotenv.config();
 const app = express();

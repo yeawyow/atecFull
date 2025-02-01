@@ -19,7 +19,7 @@ exports.register = async (req, res, next) => {
         // ตรวจสอบว่ามีผู้ใช้งานอยู่แล้วหรือไม่
         const [existingUser] = await User.findUser(user_national_id);
         if (existingUser) {
-            return res.status(400).json({ message: 'UserNationalID already exists!' });
+            return res.status(400).json({ message: 'มี user_national_id อยู่ในระบบแล้ว!' });
         }
     
         // บันทึกผู้ใช้งานใหม่
@@ -51,7 +51,7 @@ exports.login = async (req, res, next) => {
 
         const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        res.json({ token });
+        res.json({ token, "Signing Token with SECRET: ": process.env.JWT_SECRET });
     } catch (err) {
         next(err);
     }
@@ -66,7 +66,7 @@ exports.logout = async (req, res) => {
 
             if (token) {
                 if (blacklist.has(token.trim())) {
-                    return res.status(401).json({ message: 'Token revoked' });
+                    return res.status(401).json({ message: 'มีการ Logout ด้วย Token นี้แล้ว!' });
                 }
 
                 console.log("Token to blacklist:", token);
@@ -74,7 +74,8 @@ exports.logout = async (req, res) => {
                 console.log("Blacklist:", blacklist);
             }
         }
-        res.send('Logged out successfully!');
+        // res.send('Logged out successfully!');
+        return res.status(200).json({ message: "Logged out successfully!" });
     } catch (err) {
         console.error("Logout error:", err);
         res.status(500).json({ message: "Internal server error" });
@@ -83,15 +84,17 @@ exports.logout = async (req, res) => {
 
 exports.check_token_blacklist = async (req, res, next) => {
     try {
-        if(blacklist) {
-            return res.status(200).json({ blacklist });
+        if (blacklist.size > 0) {
+            // แปลง Set เป็น Array และส่งกลับ
+            const blacklistArray = Array.from(blacklist);
+            return res.status(200).json({ blacklist: blacklistArray });
         } else {
-            return res.status(401),json({ message: "ไม่มี Token ใน Blacklist" });
+            return res.status(404).json({ message: "ไม่มี Token ใน Blacklist" });
         }
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
-}
+};
 
 exports.profile = async (req, res) => { 
     try {

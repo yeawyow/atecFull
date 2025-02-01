@@ -8,35 +8,29 @@ const auth = async (req, res, next) => {
 
     if (authHeader) {
         const token = authHeader.split(' ')[1];
-        if(token) {
-            try {
-                const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                
-                // เช็คว่ามี token อยู่ใน blacklist หรือไม่
-                if (blacklist.has(token.trim())) {
-                    return res.status(401).json({ message: 'Token revoked' });
-                }
-    
-                console.log("Blacklist:", blacklist);
-                next();
-    
-            } catch (err) {
-                if (err.name === 'TokenExpiredError') {
-                    // console.log("Token expired, removing from blacklist:", token);
-                    // blacklist.delete(token.trim()); // ลบ token ที่หมดอายุออก
-                    console.log("Blacklist:", blacklist);
-                    return res.status(401).json({ message: 'Token expired' });
-                }
-                return res.status(401).json({ message: 'Invalid token' });
+        try {
+            if (!token) {
+                return res.status(401).json({ message: 'ไม่มี Token ถูกสร้างมากรุณา Login ใหม่เพื่อสร้าง Token!' });
             }
-        } else {
-            console.log('ไม่มี Token');
-            exit();
-        }
+            
+            const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+            
+            // เช็คว่ามี token อยู่ใน blacklist หรือไม่
+            if (blacklist.has(token.trim())) {
+                return res.status(401).json({ message: 'Token นี้ไม่สามารถใช้งานได้แล้วกรุณา Login ใหม่เพื่อขอ Token!' });
+            }
+            
+            user = decoded; // เก็บข้อมูล decoded token ใน req.user เพื่อใช้ใน route ถัดไป
+            next(); // ส่งการควบคุมไปยัง middleware หรือ route ถัดไป
 
-        
+        } catch (err) {
+            if (err.name === 'TokenExpiredError') {
+                return res.status(401).json({ message: 'Token หมดอายุกรุณา Login ใหม่!' }); // Token expired
+            }
+            return res.status(401).json({ message: 'ไม่พบ Token กรุณา Login ใหม่เพื่อขอ Token อีกครั้ง!' });
+        }        
     } else {
-        return res.status(401).json({ message: 'No token provided' });
+        return res.status(401).json({ message: 'ไม่มี Token ถูกส่งมากรุณาส่ง Token มาเพื่อตรวจสอบ Thank you!' });
     }
 };
 
