@@ -81,14 +81,15 @@ exports.logout = async (req, res) => {
     }
 };
 
-exports.check_token_blacklist = async (req, res) => {
+exports.check_token_blacklist = async (req, res, next) => {
     try {
-        if (blacklist.has(token.trim())) {
-            return res.status(401).json({ message: 'Token revoked' });
+        if(blacklist) {
+            return res.status(200).json({ blacklist });
+        } else {
+            return res.status(401),json({ message: "ไม่มี Token ใน Blacklist" });
         }
-        return res.status(200).json({ blacklist });
     } catch(err) {
-        return res.status(401),json({ message: err });
+        next(err);
     }
 }
 
