@@ -1,6 +1,7 @@
 const config = {
-  API_URL: 'http://localhost:5000', // URL ของ backend
-  API_LOGIN: '/api/login',
+  API_URL: 'http://localhost:3000', // URL ของ backend
+  API_LOGIN: '/auth/login',
+  API_VERIFY_TOKEN:'/auth/check_token',
   APP_TITLE: 'โปรแกรมบริหารจัดการการเรียน',
 };
 

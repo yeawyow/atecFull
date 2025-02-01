@@ -1,39 +1,47 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
+import verifyToken from '../utils/verifyToken'; // import ฟังก์ชันที่ใช้ตรวจสอบ token
+import { useDispatch } from 'react-redux';
+
 
 interface ProtectRouteProps {
   children: ReactNode; // กำหนดว่าผ่าน children ได้ทุกประเภทที่เป็น ReactNode
-  //  requireRoles?: string[]; // บทบาทที่ต้องการ (optional)
 }
 
-const ProtectRoute: React.FC<ProtectRouteProps> = ({
-  children,
-  // requireRoles = [],
-}) => {
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated,
-  );
+const ProtectRoute: React.FC<ProtectRouteProps> = ({ children }) => {
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const [isLoading, setIsLoading] = useState(true); 
+  const dispatch = useDispatch();
 
-  /* const userRoles = JSON.parse(
-    sessionStorage.getItem('roles') || '[]',
-  ) as string[]; // ดึงบทบาทจาก sessionStorage*/
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        // ตรวจสอบ token ผ่าน verifyToken
+        const isValidToken = await verifyToken(dispatch);
+        if (!isValidToken) {
+          setIsLoading(false); // เสร็จสิ้นการตรวจสอบ
+        } else {
+          setIsLoading(false); // เสร็จสิ้นการตรวจสอบ
+        }
+      } else {
+        setIsLoading(false); // ไม่มี token
+      }
+    };
 
-  // ตรวจสอบบทบาทที่จำเป็น
-  // const hasRequiredRoles =
-  // requireRoles.length === 0 ||
-  //requireRoles.some((role) => userRoles.includes(role));
+    checkToken();
+  }, [verifyToken]);
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />; // ถ้าไม่ได้ล็อกอิน ให้ไปหน้า Login
+  if (isLoading) {
+    return <div>Loading...</div>; 
+  }
+if (!isAuthenticated) {
+    return <Navigate to="/login" replace />; 
   }
 
-  /* if (!hasRequiredRoles) {
-    return <Navigate to="/access-denied" replace />; // ถ้าบทบาทไม่ตรง ให้ไปหน้า Access Denied
-  }*/
-
-  return <>{children}</>;
+  return <>{children}</>; // ถ้าผ่านการตรวจสอบ token แล้วให้แสดง children
 };
 
 export default ProtectRoute;

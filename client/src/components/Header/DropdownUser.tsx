@@ -2,10 +2,17 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
+import {useDispatch} from 'react-redux'
+import { logout } from "../../features/auth/authSlice";
+
 
 const DropdownUser = () => {
+  const dispatch= useDispatch()
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const handleLogout= (e: React.FormEvent) => {
+      e.preventDefault();
+      dispatch(logout());
+    };
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -119,7 +126,9 @@ const DropdownUser = () => {
               </Link>
             </li>
           </ul>
-          <button className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+          <button
+          onClick={handleLogout}
+          className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
             <svg
               className="fill-current"
               width="22"
@@ -137,6 +146,7 @@ const DropdownUser = () => {
                 fill=""
               />
             </svg>
+            
             Log Out
           </button>
         </div>

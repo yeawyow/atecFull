@@ -19,6 +19,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "src/lib.d.ts"],
+  "include": ["src", "src/lib.d.ts", "utils/verifyToken.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -1,28 +1,30 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk,PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import config from '../../config';
 
 interface AuthState {
   user: { id: number; name: string } | null;
-  isAuthenticated: boolean; // ค่าเริ่มต้น
+  isAuthenticated: boolean; 
   token: string | null;
   loading: boolean;
   error: string | null;
 }
 
+
 const initialState: AuthState = {
   user: null,
-  isAuthenticated: true,
+ isAuthenticated:false,
   token: null,
   loading: false,
   error: null,
 };
 
+
 // Async thunk สำหรับ login
-export const login = createAsyncThunk(
+export const loginUser = createAsyncThunk(
   'auth/login',
   async (
-    credentials: { username: string; password: string },
+    credentials: { user_national_id: string; password: string },
     { rejectWithValue },
   ) => {
     try {
@@ -30,7 +32,7 @@ export const login = createAsyncThunk(
         `${config.API_URL}${config.API_LOGIN}`,
         credentials,
       );
-      return response.data; // สมมติ API ส่ง user และ token กลับมา
+      return response.data; 
     } catch (error: any) {
       return rejectWithValue(error.response.data.message || 'Login failed');
     }
@@ -45,25 +47,36 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      state.isAuthenticated=false;
+      localStorage.setItem('token','');
+
+    },
+    setAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.pending, (state) => {
+      .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
+        state.isAuthenticated=true;
+        localStorage.setItem("token", action.payload.token); 
+
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
+      
   },
+  
 });
 
-export const { logout } = authSlice.actions;
+export const { logout,setAuthenticated } = authSlice.actions;
 export default authSlice.reducer;
