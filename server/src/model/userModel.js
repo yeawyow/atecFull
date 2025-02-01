@@ -47,12 +47,16 @@ class User {
     }
     
     static async checkPassword(user_national_id, password) {
-        const [rows] = await db.query('SELECT * FROM users WHERE user_national_id = ?', [user_national_id]);
+        const [rows] = await db.query(
+            'SELECT * FROM users WHERE user_national_id = ?', 
+            [user_national_id]
+        );
         
         if (rows.length > 0) {
             const user = rows[0];
             const isMatch = await bcrypt.compare(password, user.password);
             if (isMatch) {
+
                 return user;  // คืนค่าผู้ใช้เมื่อรหัสผ่านถูกต้อง
             }
         }

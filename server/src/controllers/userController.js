@@ -45,10 +45,11 @@ exports.login = async (req, res, next) => {
         }
 
         const payload = {
-            userId: existingPassword.id
+            userId: existingPassword.id,
+            issuer: process.env.JWT_SECRET // เพิ่ม issuer เพื่อระบุว่า token นี้สร้างจากระบบของคุณ
         };
 
-        const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }); // เปลี่ยนมาใช้ jwt.sign
+        const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.json({ token });
     } catch (err) {
@@ -58,12 +59,16 @@ exports.login = async (req, res, next) => {
 
 exports.logout = async (req, res) => {
     try {
-        console.log("Headers:", req.headers); // ตรวจสอบ headers ทั้งหมด
         const authHeader = req.headers.authorization;
         if (authHeader) {
             console.log("Auth Header:", authHeader);
             const token = authHeader.split(' ')[1]; 
+
             if (token) {
+                if (blacklist.has(token.trim())) {
+                    return res.status(401).json({ message: 'Token revoked' });
+                }
+
                 console.log("Token to blacklist:", token);
                 blacklist.add(token.trim()); 
                 console.log("Blacklist:", blacklist);
@@ -76,7 +81,18 @@ exports.logout = async (req, res) => {
     }
 };
 
-exports.profile = async (req, res) => {
+exports.check_token_blacklist = async (req, res) => {
+    try {
+        if (blacklist.has(token.trim())) {
+            return res.status(401).json({ message: 'Token revoked' });
+        }
+        return res.status(200).json({ blacklist });
+    } catch(err) {
+        return res.status(401),json({ message: err });
+    }
+}
+
+exports.profile = async (req, res) => { 
     try {
         res.status(200).json({ message: 'เข้าสู่หน้า Profile' });
     } catch (error) {
