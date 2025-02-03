@@ -8,7 +8,7 @@ function msg(res, status, message) {
     return res.status(status).json({ message: message });
 }
 
-const authStudents = async (req, res, next) => {
+const authTeachers = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (authHeader) {
@@ -28,10 +28,26 @@ const authStudents = async (req, res, next) => {
             req.user = decoded; // เก็บข้อมูล decoded token ใน req.user เพื่อใช้ใน route ถัดไป
             const user = req.user;
 
-            if(user.role[0] === 'student') {
-                next();
+            if(user.role.length > 0) {
+                let foundTeacher = false
+                for (const role of user.role) {
+                    if (role === 'teacher') {
+                        foundTeacher = true;
+                        // ทำงานอื่น ๆ หากต้องการ เช่น เก็บข้อมูลเพิ่ม หรือทำงานบางอย่างเมื่อพบ 'teacher'
+                    }
+                }
+                
+                // ถ้าเจอ 'teacher' ให้ส่ง response กลับ
+                if (foundTeacher) {
+                    next();
+                } else {
+                    return msg(res, 200, 'User นี้ไม่ใช่ Teacher กรุณาตรวจสอบข้อมูลหรือสิทธิ์ในการเข้าถึงด้วยครับ!');
+                }
             } else {
-                return msg(res, 200, 'User นี้ไม่ใช่ Student! กรุณาตรวจสอบข้อมูลหรือสิทธิ์ในการเข้าถึงด้วยครับ!');
+                if(user.role[0] === 'teacher') {
+                    next();
+                }
+                return msg(res, 200, 'User นี้ไม่ใช่ Teacher กรุณาตรวจสอบข้อมูลหรือสิทธิ์ในการเข้าถึงด้วยครับ!');
             }
 
         } catch (err) {
@@ -45,4 +61,4 @@ const authStudents = async (req, res, next) => {
     }
 };
 
-module.exports = authStudents;
+module.exports = authTeachers;

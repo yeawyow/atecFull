@@ -1,4 +1,4 @@
-const User = require('../model/userModel');
+const Auth = require('../model/authModel');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config({ path: './src/.env' }); // ตรวจสอบ path อีกครั้ง
 const blacklist = require('../utils/blacklist');
@@ -12,7 +12,7 @@ function msg(res, status, message) {
 exports.register = async (req, res, next) => {
     const { user_national_id, password, role_id } = req.body;
 
-    const checkST = await User.RCheckST(user_national_id, role_id);
+    const checkST = await Auth.RCheckST(user_national_id, role_id);
 
     if(checkST.type === 'none') {
         return msg(res, 401, checkST.message);
@@ -47,13 +47,13 @@ exports.register = async (req, res, next) => {
     
     try {
         // ตรวจสอบว่ามีผู้ใช้งานอยู่แล้วหรือไม่
-        const [existingUser] = await User.findUser(user_national_id);
+        const [existingUser] = await Auth.findUser(user_national_id);
         if (existingUser) {
             return msg(res, 401, 'มี user อยู่ในระบบแล้ว!');
         }
     
         // บันทึกผู้ใช้งานใหม่
-        const result = await User.createUser(data);  // ไม่ต้อง destructure อีกแล้ว
+        const result = await Auth.createUser(data);  // ไม่ต้อง destructure อีกแล้ว
         return msg(res, 200, 'User registered successfully!');
     } catch (err) {
         return msg(res, 500, err);
@@ -64,22 +64,22 @@ exports.login = async (req, res, next) => {
     const { user_national_id, password } = req.body;
 
     try {
-        const existingUser = await User.checkUser(user_national_id);
+        const existingUser = await Auth.checkUser(user_national_id);
         if (!existingUser || existingUser.length === 0) {
             return msg(res, 401, 'ไม่มีข้อมูลในระบบ!');
         }
 
-        const existingPassword = await User.checkPassword(user_national_id, password);
+        const existingPassword = await Auth.checkPassword(user_national_id, password);
         if (!existingPassword) {
             return msg(res, 401, 'รหัสผ่านไม่ถูกต้อง!');
         }
 
-        const checkUserRole = await User.checkUserRole(existingPassword);
+        const checkUserRole = await Auth.checkUserRole(existingPassword);
         if (!checkUserRole) {
             return msg(res, 401, 'ไม่มีข้อมูลของสิทธิ์!');
         }
 
-        const checkST = await User.LCheckST(existingPassword);
+        const checkST = await Auth.LCheckST(existingPassword);
         if(!checkST) {
             return msg(res, 401, 'ไม่มีข้อมูล Student หรือ Teacher!');
         }
@@ -144,5 +144,29 @@ exports.profile = async (req, res) => {
     } catch (error) {
         console.error("Profile error:", error);
         return msg(res, 500, 'Internal server error');
+    }
+};
+
+exports.profileStudent = async (req, res, next) => {
+    try {
+        const user = req.user;
+        return msg(
+            res, 
+            200, 
+            `Welcome to Profile Student! : ${user.userData.data.prefix_name} ${user.userData.data.fname} ${user.userData.data.lname}`);
+    } catch(err) {
+        next(err);
+    }
+};
+
+exports.profileTeacher = async (req, res, next) => {
+    try {
+        const user = req.user;
+        return msg(
+            res, 
+            200, 
+            `Welcome to Profile Teacher! : ${user.userData.data.prefix_name} ${user.userData.data.fname} ${user.userData.data.lname}`);
+    } catch(err) {
+        next(err);
     }
 };

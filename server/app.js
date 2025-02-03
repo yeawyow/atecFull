@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const helmet = require('helmet');
 const cors = require('cors');
 const teacherRoutes = require('./src/routes/teacherRoutes');
-const userRoutes = require('./src/routes/userRoutes');
+const authRoutes = require('./src/routes/authRoutes');
 const cron = require('node-cron');
 const cleanupExpiredTokens = require('./src/utils/cleanupExpiredTokens '); // นำเข้าไฟล์ฟังก์ชัน
 const trackTokensMiddleware = require('./src/utils/trackTokensMiddleware');
@@ -21,7 +21,7 @@ app.use(trackTokensMiddleware);
 
 // Route
 app.use('/api', teacherRoutes);
-app.use('/auth', userRoutes);
+app.use('/auth', authRoutes);
 
 // ตั้งเวลาเรียกใช้ cleanupExpiredTokens ทุก 5 นาที
 cron.schedule('*/5 * * * *', () => {

@@ -1,4 +1,4 @@
-const User = require('../model/userModel');
+const User = require('../model/authModel');
 const jwt = require('jsonwebtoken');
 const blacklist = require('../utils/blacklist');
 const dotenv = require('dotenv').config({ path: './src/.env' }); // ตรวจสอบ path อีกครั้ง
