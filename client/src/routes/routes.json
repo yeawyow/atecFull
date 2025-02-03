@@ -20,6 +20,14 @@
     "protected": true
   },
   {
+    "path": "/userManagement",
+    "element": "userManagement",
+    "layout": "DefaultLayout",
+    "title": "User Management (จัดการผู้ใช้งาน)",
+    "protected": true
+  },
+  
+  {
     "path": "*",
     "element": "PageAceess",
     "protected": false
