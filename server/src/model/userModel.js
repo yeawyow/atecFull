@@ -164,7 +164,7 @@ class User {
     static async LCheckST(existingPassword) {
         try {
             const [student] = await db.query(
-                'SELECT national_id, prefix_name, fname, lname FROM students s INNER JOIN prefixes p ON s.prefix_id = p.id WHERE s.national_id = ?',
+                'SELECT prefix_name, fname, lname FROM students s INNER JOIN prefixes p ON s.prefix_id = p.id WHERE s.national_id = ?',
                 [existingPassword.user_national_id]
             );
             if(student.length > 0) {
@@ -172,7 +172,7 @@ class User {
             } 
     
             const [teacher] = await db.query(
-                'SELECT national_id, prefix_name, fname, lname FROM teachers t INNER JOIN prefixes p ON t.prefix_id = p.id WHERE t.national_id = ?',
+                'SELECT prefix_name, fname, lname FROM teachers t INNER JOIN prefixes p ON t.prefix_id = p.id WHERE t.national_id = ?',
                 [existingPassword.user_national_id]
             );
             if(teacher.length > 0) {

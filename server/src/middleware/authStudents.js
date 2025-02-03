@@ -38,11 +38,9 @@ const authStudents = async (req, res, next) => {
                 return msg(res, 401, 'Token หมดอายุกรุณา Login ใหม่!');
             }
             return msg(res, 401, 'ไม่พบ Token กรุณา Login ใหม่เพื่อขอ Token อีกครั้ง!');
-            return res.status(401).json({ message: 'ไม่พบ Token กรุณา Login ใหม่เพื่อขอ Token อีกครั้ง!' });
         }        
     } else {
-        return msg(res, 401, 'ไม่สามารถใข้งานระบบได้กรุณา Login ใหม่!');
-        return res.status(401).json({ message: 'ไม่มี Token ถูกส่งมากรุณาส่ง Token มาเพื่อตรวจสอบ Thank you!' });
+        return msg(res, 401, 'ไม่มี Token ถูกส่งมากรุณาส่ง Token มาเพื่อตรวจสอบ Thank you!');
     }
 };
 
