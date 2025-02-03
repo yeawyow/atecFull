@@ -23,7 +23,7 @@ app.use(trackTokensMiddleware);
 app.use('/api', teacherRoutes);
 app.use('/auth', userRoutes);
 
-// ตั้งเวลาเรียกใช้ cleanupExpiredTokens ทุก 1 ชั่วโมง
+// ตั้งเวลาเรียกใช้ cleanupExpiredTokens ทุก 5 นาที
 cron.schedule('*/5 * * * *', () => {
     console.log('Running cleanupExpiredTokens...');
     cleanupExpiredTokens();

@@ -25,8 +25,8 @@ const connection = mysql.createConnection({
     port: process.env.DB_PORT,
     database: process.env.DB_NAME,
     // waitForConnection: true,
-    connectionLimit: 10,
-    queueLimit: 0
+    // connectionLimit: 10,
+    // queueLimit: 0
 });
 
 module.exports = connection.promise();

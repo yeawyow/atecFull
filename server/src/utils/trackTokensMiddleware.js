@@ -13,7 +13,7 @@ const trackTokensMiddleware = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
             // ตรวจสอบว่า token ถูกสร้างจากระบบของคุณหรือไม่
-            if (decoded.issuer != process.env.JWT_SECRET) {
+            if (!decoded) {
                 await blacklist.add(token);
                 console.log(`Token added to blacklist: ${token}`);
                 console.log(`Token is from another system: ${token}`);

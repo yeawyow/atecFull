@@ -4,7 +4,7 @@ const userController = require('../controllers/userController');
 const auth = require('../middleware/auth');
 const verify_front = require('../middleware/verify_front');
 
-router.post('/register', userController.register);
+router.post('/register', auth, userController.register);
 router.post('/login', userController.login);
 router.post('/logout', userController.logout);
 
