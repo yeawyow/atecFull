@@ -76,7 +76,7 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                My Profile
+              ข้อมูลส่วนตัว
               </Link>
             </li>
             <li>

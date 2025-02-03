@@ -62,27 +62,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       document.querySelector('body')?.classList.remove('sidebar-expanded');
     }
   }, [sidebarExpanded]);
-  const menuItems = [
-    {
-      name: 'Dashboard',
-      icon: LayoutDashboard,
-      path: '/',
-      roles: ['admin', 'teacher', 'student'],
-    },
-    {
-      name: 'Profile',
-      icon: UserPen,
-      path: '/profile',
-      roles: ['admin', 'teacher', 'student'],
-    },
-    { name: 'Settings', icon: Settings, path: '/settings', roles: ['admin'] },
-    {
-      name: 'Chart',
-      icon: ChartPie,
-      path: '/chart',
-      roles: ['admin', 'teacher'],
-    },
-  ];
+  
   return (
     <aside
       ref={sidebar}
@@ -166,20 +146,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           {/* <!-- Others Group --> */}
           <div>
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-              OTHERS
+              ADMIN
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5">
               {/* <!-- Menu Item Chart --> */}
               <li>
                 <NavLink
-                  to="/chart"
+                  to="/userManagement"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes('chart') && 'bg-graydark dark:bg-meta-4'
                   }`}
                 >
                   <ChartPie />
-                  Chart
+                  User Management (จัดการผู้ใช้งาน)
                 </NavLink>
               </li>
               {/* <!-- Menu Item Chart --> */}
