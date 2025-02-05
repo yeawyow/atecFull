@@ -33,6 +33,7 @@ jobs:
             server: ${{ secrets.FTP_HOST }}
             username: ${{ secrets.FTP_USER }}
             password: ${{ secrets.FTP_PASSWORD }}  # ตรวจสอบว่าชื่อถูกต้อง!
+            port: 2121
             local-dir: client/dist/
             server-dir: public_html/
         
