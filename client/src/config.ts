@@ -2,7 +2,7 @@ const config = {
   API_URL: 'http://localhost:3000', // URL ของ backend
   API_LOGIN: '/auth/login',
   API_VERIFY_TOKEN:'/auth/check_token',
-  APP_TITLE: 'ระบบจัดการเรียนการสอน',
+  APP_TITLE: 'ระบบการจัดการเรียนรู้ anywhere anytime',
 };
 
 export default config;
