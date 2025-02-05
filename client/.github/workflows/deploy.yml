@@ -23,5 +23,5 @@ jobs:
           server: da93.hostneverdie.com
           username: yeawyow@atec-inter.ac.th
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
+          local-dir: dist/
           server-dir: /public_html/
