@@ -1,0 +1,39 @@
+name: Deploy React & Node.js to HostNeverDie
+
+on:
+  push:
+    branches:
+      - main  # รันเมื่อ Push ไปที่ branch main
+
+jobs:
+  deploy-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies (Client)
+        run: |
+          cd client
+          npm install
+
+      - name: Build React App
+        run: |
+          cd client
+          npm run build
+
+      - name: Deploy Client via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: da93.hostneverdie.com
+          username: yeawyow@atec-inter.ac.th
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: client/dist/
+          server-dir: public_html/
+
+  
