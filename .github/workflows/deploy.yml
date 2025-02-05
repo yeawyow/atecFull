@@ -28,12 +28,13 @@ jobs:
           npm run build
 
       - name: Deploy Client via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: da93.hostneverdie.com
-          username: yeawyow@atec-inter.ac.th
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: client/dist/
-          server-dir: public_html/
+            server: ${{ secrets.FTP_HOST }}
+            username: ${{ secrets.FTP_USER }}
+            password: ${{ secrets.FTP_PASSWORD }}  # ตรวจสอบว่าชื่อถูกต้อง!
+            local-dir: client/build/
+            server-dir: public_html/
+        
 
   
