@@ -27,6 +27,9 @@ jobs:
           cd client
           npm run build
 
+      - name: Debug Build Output  # ✅ ตรวจสอบว่าไฟล์ถูก Build หรือไม่
+        run: ls -lah client/dist
+
       - name: Deploy Client via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -34,6 +37,7 @@ jobs:
             username: ${{ secrets.FTP_USER }}
             password: ${{ secrets.FTP_PASSWORD }}  # ตรวจสอบว่าชื่อถูกต้อง!
             port: 2121
+            protocol: ftps  # ✅ ถ้า HostNeverDie รองรับ FTPS ให้เพิ่มบรรทัดนี้
             local-dir: client/dist/
             server-dir: public_html/
         
